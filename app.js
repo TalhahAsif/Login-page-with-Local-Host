@@ -52,8 +52,8 @@ const savingNoteinLS = () => {
     }
     subjectInput.value = "";
     noteInput.value = "";
+    showNotes();
   }
-  showNotes();
 };
 
 const notes = localStorage.getItem("notes");
@@ -72,27 +72,26 @@ const showNotes = () => {
   } else {
     noNotes.style.display = "none";
     noteList.style.display = "block";
-    LSnotesArray.forEach(function (value, index) {
-      if (value.email == userEmail) {
-        const subjectList = `<option>${value.subject}</option>`;
-        const noteListValue = `<li class="py-3 my-3 px-5 rounded bg-slate-800">
+    LSnotesArray.forEach(function (data, index) {
+      console.log(data, "data");
+      const subjectList = `<option>${data.subject}</option>`;
+      const noteListValue = `<li class="py-3 my-3 px-5 rounded bg-slate-800">
                   <div class="flex justify-between">
                   <p
                   id="liSubject"
                   class="text-sm w-14 text-center rounded-full px-1 my-1 bg-red-600"
                   >
-                  ${value.subject}
+                  ${data.subject}
                   </p>
                   <div>
                   <i class="fa-regular fa-pen-to-square cursor-pointer"></i>
                   <i class="fa-solid fa-trash mx-3 cursor-pointer"></i>
                   </div>
                   </div>
-                  ${LSnotesArray[index].noteText}
+                  ${data.noteText}
                   <p class="text-lg">
   </p>
   </li>`;
-      }
 
       subjects.innerHTML += subjectList;
       noteList.innerHTML += noteListValue;
