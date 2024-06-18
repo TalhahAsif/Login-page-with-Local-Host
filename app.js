@@ -13,26 +13,38 @@ const setEmail = () => {
 
 const check_user_login = () => {
   const user_email = localStorage.getItem("email");
+  const notesFromLS = JSON.parse(localStorage.getItem("notes"));
+
+  console.log("notesFromLS", notesFromLS);
+
   if (user_email) {
     loginForm.style.display = "none";
     mainPage.style.display = "block";
     userEmail.innerHTML = user_email;
+    showNotes();
   } else {
     loginForm.style.display = "block";
     mainPage.style.display = "none";
   }
 };
 
+check_user_login();
+
 const logout = () => {
-  localStorage.clear("email");
+  localStorage.removeItem("email");
   check_user_login();
+  noteList.innerHTML = ""
 };
 
-const savingNoteinLS = () => {
+function savingNoteinLS() {
+  const user_email = localStorage.getItem("email");
+  const uniqieID = Math.ceil(Math.random() * 1000000);
+  console.log(uniqieID);
   const detailsObj = {
     email: user_email,
     subject: subjectInput.value,
     noteText: noteInput.value,
+    id: uniqieID,
   };
 
   if (!noteInput.value || !subjectInput.value) {
@@ -42,8 +54,8 @@ const savingNoteinLS = () => {
     if (notes) {
       noteList.innerHTML = "";
       subjects.innerHTML = "";
-      const userNotesArray = localStorage.getItem("notes");
-      const userNotes = JSON.parse(userNotesArray);
+      // const userNotesArray = localStorage.getItem("notes");
+      const userNotes = JSON.parse(notes);
       userNotes.push(detailsObj);
       localStorage.setItem("notes", JSON.stringify(userNotes));
     } else {
@@ -54,13 +66,9 @@ const savingNoteinLS = () => {
     noteInput.value = "";
     showNotes();
   }
-};
+}
 
-const notes = localStorage.getItem("notes");
-
-console.log(JSON.parse(notes));
-
-const showNotes = () => {
+function showNotes() {
   const notes = localStorage.getItem("notes");
   const userEmail = localStorage.getItem("email");
 
@@ -74,38 +82,46 @@ const showNotes = () => {
     noteList.style.display = "block";
     LSnotesArray.forEach(function (data, index) {
       console.log(data, "data");
-      const subjectList = `<option>${data.subject}</option>`;
-      const noteListValue = `<li class="py-3 my-3 px-5 rounded bg-slate-800">
-                  <div class="flex justify-between">
-                  <p
-                  id="liSubject"
-                  class="text-sm w-14 text-center rounded-full px-1 my-1 bg-red-600"
-                  >
-                  ${data.subject}
-                  </p>
-                  <div>
-                  <i class="fa-regular fa-pen-to-square cursor-pointer"></i>
-                  <i class="fa-solid fa-trash mx-3 cursor-pointer"></i>
-                  </div>
-                  </div>
-                  ${data.noteText}
-                  <p class="text-lg">
-  </p>
-  </li>`;
+      if (data.email === userEmail) {
+        const subjectList = `<option>${data.subject}</option>`;
+        const noteListValue = `<li class="py-3 my-3 px-5 rounded bg-slate-800">
+                      <div class="flex justify-between">
+                      <p
+                      id="liSubject"
+                      class="text-sm w-14 text-center rounded-full px-1 my-1 bg-red-600"  
+                      >
+                      ${data.subject}
+                      </p>
+                      <div>
+                      <i id="deleteNote" class="fa-regular fa-pen-to-square cursor-pointer"></i>
+                      <i id="editNote"class="fa-solid fa-trash mx-3 cursor-pointer"></i>
+                      </div>
+                      </div>
+                      ${data.noteText}
+                      <p class="text-lg">
+      </p>
+      </li>`;
 
-      subjects.innerHTML += subjectList;
-      noteList.innerHTML += noteListValue;
+        subjects.innerHTML += subjectList;
+        noteList.innerHTML += noteListValue;
+      }
     });
   }
+}
 
-  // localStorage.setItem("notes  Details", detailsObj);
+const deleteBTN = document.getElementById("deleteNote")
 
-  // console.log(noteInput.value);
-};
+console.log(deleteBTN);
 
-check_user_login();
-showNotes();
+
+const deleteNote = () =>{
+  const notesArray = JSON.parse(localStorage.getItem("notes"))
+  console.log("hello");
+}
 
 loginBtn.addEventListener("click", setEmail);
 logoutBTN.addEventListener("click", logout);
 addNoteBTN.addEventListener("click", savingNoteinLS);
+deleteBTN.addEventListener("click", deleteNote);
+
+showNotes();
