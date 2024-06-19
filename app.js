@@ -33,7 +33,7 @@ check_user_login();
 const logout = () => {
   localStorage.removeItem("email");
   check_user_login();
-  noteList.innerHTML = ""
+  noteList.innerHTML = "";
 };
 
 function savingNoteinLS() {
@@ -65,7 +65,7 @@ function savingNoteinLS() {
     subjectInput.value = "";
     noteInput.value = "";
     showNotes();
-  }
+    }
 }
 
 function showNotes() {
@@ -81,7 +81,7 @@ function showNotes() {
     noNotes.style.display = "none";
     noteList.style.display = "block";
     LSnotesArray.forEach(function (data, index) {
-      console.log(data, "data");
+      console.log(LSnotesArray.indexOf(data), "data");
       if (data.email === userEmail) {
         const subjectList = `<option>${data.subject}</option>`;
         const noteListValue = `<li class="py-3 my-3 px-5 rounded bg-slate-800">
@@ -93,8 +93,8 @@ function showNotes() {
                       ${data.subject}
                       </p>
                       <div>
-                      <i id="deleteNote" class="fa-regular fa-pen-to-square cursor-pointer"></i>
-                      <i id="editNote"class="fa-solid fa-trash mx-3 cursor-pointer"></i>
+                      <i class="fa-regular fa-pen-to-square cursor-pointer"></i>
+                      <i id="deleteNote" onclick="deleteNote()" class="fa-solid fa-trash mx-3 cursor-pointer"></i>
                       </div>
                       </div>
                       ${data.noteText}
@@ -109,19 +109,21 @@ function showNotes() {
   }
 }
 
-const deleteBTN = document.getElementById("deleteNote")
+function deleteNote() {
+  const notesArray = JSON.parse(localStorage.getItem("notes"));
+  for (let i = 0; i < notesArray.length; i++) { 
+      const deleteNoteIndex = notesArray.indexOf(notesArray[i]);
+      const deletednote = notesArray.splice(deleteNoteIndex, 1 );
+      console.log(JSON.stringify(notesArray));
 
-console.log(deleteBTN);
-
-
-const deleteNote = () =>{
-  const notesArray = JSON.parse(localStorage.getItem("notes"))
-  console.log("hello");
+      localStorage.removeItem("notes")
+      localStorage.setItem("notes", JSON.stringify(notesArray))
+  }
 }
 
 loginBtn.addEventListener("click", setEmail);
 logoutBTN.addEventListener("click", logout);
 addNoteBTN.addEventListener("click", savingNoteinLS);
-deleteBTN.addEventListener("click", deleteNote);
+// deleteBTN.addEventListener("click", deleteNote());
 
 showNotes();
